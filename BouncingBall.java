@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.Random;
 
 /**
  * Class BouncingBall - a graphical ball that observes the effect of gravity. The ball
@@ -18,9 +19,9 @@ import java.awt.geom.*;
 
 public class BouncingBall
 {
-    private static final int GRAVITY = 3;  // effect of gravity
-
-    private int ballDegradation = 2;
+    private static final int GRAVITY = 0;  // effect of gravity
+    Random r = new Random();
+    private int ballDegradation = 0;
     private Ellipse2D.Double circle;
     private Color color;
     private int diameter;
@@ -28,7 +29,8 @@ public class BouncingBall
     private int yPosition;
     private final int groundPosition;      // y position of ground
     private Canvas canvas;
-    private int ySpeed = 1;                // initial downward speed
+    private int ySpeed = r.nextInt((30 - 1)+1)+1;                // initial downward speed
+    private int xSpeed = r.nextInt((30 - 1)+1)+1;
 
     /**
      * Constructor for objects of class BouncingBall
@@ -37,7 +39,7 @@ public class BouncingBall
      * @param yPos  the vertical coordinate of the ball
      * @param ballDiameter  the diameter (in pixels) of the ball
      * @param ballColor  the color of the ball
-     * @param groundPos  the position of the ground (where the wall will bounce)
+     * @param groundPos  the position of the ground (where the ball will bounce)
      * @param drawingCanvas  the canvas to draw this ball on
      */
     public BouncingBall(int xPos, int yPos, int ballDiameter, Color ballColor,
@@ -77,16 +79,26 @@ public class BouncingBall
         erase();
             
         // compute new position
-        ySpeed += GRAVITY;
         yPosition += ySpeed;
-        xPosition +=2;
+        xPosition += xSpeed;
 
-        // check if it has hit the ground
-        if(yPosition >= (groundPosition - diameter) && ySpeed > 0) {
+        // check if it has hit the ground or wall
+        if(yPosition >= (groundPosition - diameter) && ySpeed > 0 ) {
             yPosition = (int)(groundPosition - diameter);
             ySpeed = -ySpeed + ballDegradation; 
         }
-
+        if (xPosition >= (540-diameter) && xSpeed >0){
+            xPosition = (int)(540-diameter);
+            xSpeed = -xSpeed + ballDegradation;
+        }
+        if (xPosition <= (71-diameter) && xSpeed <0){
+            xPosition = (int)(71-diameter);
+            xSpeed = -xSpeed + ballDegradation;
+        }
+        if (yPosition <= ((groundPosition-370)-diameter) && ySpeed <0){
+            yPosition = (int)((groundPosition-370)-diameter);
+            ySpeed = -ySpeed +ballDegradation;
+        }
         // draw again at new position
         draw();
     }    
